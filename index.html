@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080b0f">
+<link rel="manifest" href="manifest.webmanifest">
+<title>EX30 Cluster</title>
+<style>
+*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;background:#080b0f;color:#f5f7f9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+body{display:flex;align-items:center;justify-content:center}
+.cluster{width:100vw;height:100vh;max-width:1100px;max-height:620px;padding:clamp(16px,3vw,34px);display:grid;grid-template-columns:25% 50% 25%;align-items:center;background:radial-gradient(ellipse at 50% 55%,#1c252e 0%,#0c1117 58%,#080b0f 100%);position:relative}
+.left,.right{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px}
+.ready{font-size:clamp(12px,1.7vw,18px);letter-spacing:.16em;color:#66d69b;font-weight:700}
+.speed{font-size:clamp(76px,14vw,150px);font-weight:300;line-height:.95;letter-spacing:-.07em;font-variant-numeric:tabular-nums}
+.unit{font-size:clamp(15px,2vw,21px);color:#aeb8c2;margin-top:5px}
+.road-wrap{height:72%;width:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.road{height:100%;width:70%;max-width:250px;position:relative;overflow:hidden;background:linear-gradient(90deg,transparent 0 8%,#69727b 8.5% 9%,#252e37 9.5% 90.5%,#69727b 91% 91.5%,transparent 92%);clip-path:polygon(31% 0,69% 0,100% 100%,0 100%)}
+.road:before{content:"";position:absolute;left:49%;top:-5%;height:110%;width:2px;background:repeating-linear-gradient(to bottom,#cbd1d7 0 22px,transparent 22px 43px);opacity:.75}
+.car{position:absolute;left:50%;bottom:13%;transform:translateX(-50%);width:48px;height:88px;background:#050607;border:2px solid #65717c;border-radius:15px 15px 11px 11px;box-shadow:0 4px 16px #000a}
+.car:before{content:"";position:absolute;left:7px;right:7px;top:15px;height:25px;background:#293640;border-radius:8px 8px 4px 4px;border:1px solid #77838e}
+.car:after{content:"";position:absolute;left:7px;right:7px;bottom:10px;height:15px;background:#111920;border-radius:3px}
+.time{font-size:clamp(24px,4vw,42px);font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.gps{font-size:12px;color:#87939e;text-align:center;line-height:1.5}
+.status{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:#64717d}
+@media (orientation:portrait){.cluster{grid-template-columns:1fr 1fr;grid-template-rows:32% 50% 18%;padding:18px}.left{grid-column:1;grid-row:1}.right{grid-column:2;grid-row:1}.road-wrap{grid-column:1/3;grid-row:2;height:100%}.status{grid-row:3}.speed{font-size:clamp(70px,18vw,110px)}.road{width:40%}}
+</style>
+</head>
+<body>
+<main class="cluster">
+ <section class="left">
+  <div class="ready">● READY</div>
+  <div><div class="speed" id="speed">--</div><div class="unit">km/h</div></div>
+ </section>
+ <section class="road-wrap"><div class="road"><div class="car"></div></div></section>
+ <section class="right">
+  <div class="time" id="time">--:--</div>
+  <div class="gps" id="gps">GPS 연결 대기 중</div>
+ </section>
+ <div class="status" id="status">GPS 속도 표시 · 실제 차량 데이터와 연결되지 않음</div>
+</main>
+<script>
+const speedEl=document.getElementById('speed'), gpsEl=document.getElementById('gps'), statusEl=document.getElementById('status');
+function clock(){document.getElementById('time').textContent=new Intl.DateTimeFormat('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
+clock();setInterval(clock,1000);
+if('geolocation' in navigator){
+ navigator.geolocation.watchPosition(p=>{
+  const s=p.coords.speed;
+  speedEl.textContent=(s===null||!Number.isFinite(s))?'0':String(Math.round(s*3.6));
+  gpsEl.textContent='GPS 정확도 ±'+Math.round(p.coords.accuracy)+'m';
+  statusEl.textContent='GPS 연결됨 · GPS 측정값은 실제 속도계와 차이가 날 수 있음';
+ },e=>{gpsEl.textContent='위치 권한을 확인해 주세요';statusEl.textContent='Safari에서 위치 접근을 허용해 주세요';},
+ {enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+}else{gpsEl.textContent='GPS를 사용할 수 없습니다'}
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+</script>
+</body></html>
