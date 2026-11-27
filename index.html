@@ -35,6 +35,9 @@ body{display:flex;align-items:center;justify-content:center}
 .gears{height:62%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:0 0 0 12%;font-size:clamp(25px,2.5vw,48px);font-weight:300;color:#9ca3ad}
 .gear{width:100%;text-align:center;line-height:1.25}
 .gear.active{color:#080a0d;background:#d0d4dc;border-radius:18px;padding:2px 0}
+
+.road-area{position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:center;background:#eef0f5}
+.road-scene{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
 .gps{position:absolute;right:22%;bottom:14%;font-size:clamp(9px,.85vw,14px);color:#777f8b;white-space:nowrap}
 @media (orientation:portrait){
  .bezel{width:100vw;height:100vh;border-radius:5vw;padding:2vw}
@@ -59,9 +62,7 @@ body{display:flex;align-items:center;justify-content:center}
    <div class="speedbox"><div class="speed" id="speed">0</div><div class="unit">km/h</div></div>
   </section>
   <section class="road-area">
-   <div class="road"><div class="lane"></div><div class="lane2"></div><div class="lane3"></div>
-    <div class="car"><div class="car-bottom"></div></div>
-   </div>
+   <img class="road-scene" src="road-scene.png" alt="">
   </section>
   <section class="right">
    <div class="clockbox"><div class="time" id="time">21:45</div></div>

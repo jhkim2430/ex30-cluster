@@ -1,2 +1,4 @@
-# EX30 Cluster v4
-Reference-style layout update. Speed-limit icon is omitted. R/N/D are visual indicators only; D is highlighted and does not reflect actual vehicle gear. GPS speed is estimated and not connected to the car. Replace repository files with these files and commit.
+# EX30 Cluster v5
+기존 v4 레이아웃은 유지하고 중앙 도로/차량을 사실적인 이미지로 교체했습니다.
+GitHub 저장소 최상위에 모든 파일을 업로드해 기존 파일을 덮어쓰세요. road-scene.png도 반드시 함께 업로드해야 합니다.
+캐시 이름을 v5로 변경했습니다. GPS 속도는 GPS 추정값이며 실제 차량과 연결되지 않습니다. R/N/D는 표시용이고 D 고정 강조입니다.
