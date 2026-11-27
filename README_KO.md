@@ -1,0 +1,2 @@
+# EX30 Cluster v4
+Reference-style layout update. Speed-limit icon is omitted. R/N/D are visual indicators only; D is highlighted and does not reflect actual vehicle gear. GPS speed is estimated and not connected to the car. Replace repository files with these files and commit.

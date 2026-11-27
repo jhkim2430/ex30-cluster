@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<title>EX30 Cluster</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#080a0d;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+body{display:flex;align-items:center;justify-content:center}
+.bezel{width:100vw;height:100vh;background:#020304;border:clamp(3px,.35vw,7px) solid #24272d;border-radius:3.2vw;padding:1.55vw;display:flex;align-items:center;justify-content:center}
+.screen{width:100%;height:100%;max-height:calc(100vh - 3.1vw);border-radius:2.25vw;overflow:hidden;position:relative;display:grid;grid-template-columns:30% 46% 24%;align-items:stretch;background:linear-gradient(110deg,#f4f5f9 0%,#e8ebf2 48%,#f5f6fa 100%);box-shadow:inset 0 0 30px #fff8}
+.left{position:relative;display:flex;align-items:center;justify-content:center;border-right:1px solid #c9cdd5;margin:14% 0 14%}
+.ready{position:absolute;top:-7%;left:50%;transform:translateX(-50%);font-size:clamp(13px,1.5vw,25px);font-weight:500;color:#00a94f;letter-spacing:.01em}
+.speedbox{display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:2%}
+.speed{font-size:clamp(105px,10.5vw,210px);font-weight:300;line-height:.86;letter-spacing:-.065em;color:#050608;font-variant-numeric:tabular-nums}
+.unit{font-size:clamp(19px,2vw,39px);color:#353b45;margin-top:14px;font-weight:400}
+.road-area{position:relative;overflow:hidden}
+.road{position:absolute;inset:0;width:100%;height:100%;background:linear-gradient(180deg,#cbd0d9 0%,#69717e 20%,#3d4652 100%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)}
+.road:before,.road:after{content:"";position:absolute;top:0;height:100%;width:3px;background:linear-gradient(to bottom,#e9edf3,#f5f6f9);opacity:.9}
+.road:before{left:calc(40% - 1px);transform:rotate(0deg);transform-origin:top}
+.road:after{right:calc(40% - 1px)}
+.lane{position:absolute;top:-5%;height:110%;width:3px;left:50%;transform:translateX(-50%);background:repeating-linear-gradient(to bottom,#e7eaf0 0 18px,transparent 18px 48px);opacity:.72}
+.lane2{position:absolute;top:3%;height:97%;width:3px;left:34%;transform:rotate(12deg);background:repeating-linear-gradient(to bottom,#e8ebf0 0 13px,transparent 13px 45px);opacity:.45}
+.lane3{position:absolute;top:3%;height:97%;width:3px;right:34%;transform:rotate(-12deg);background:repeating-linear-gradient(to bottom,#e8ebf0 0 13px,transparent 13px 45px);opacity:.45}
+.car{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);width:clamp(72px,8vw,145px);height:clamp(104px,12vw,210px);border-radius:25% 25% 18% 18%;background:linear-gradient(90deg,#10151b 0%,#333a43 15%,#080b0f 28%,#11161d 72%,#303740 88%,#090c10 100%);border:2px solid #4d5661;box-shadow:0 8px 15px #10151b80,inset 0 0 0 2px #11161b}
+.car:before{content:"";position:absolute;left:13%;right:13%;top:12%;height:29%;border-radius:25% 25% 10% 10%;background:linear-gradient(180deg,#111820,#05080c);border:2px solid #5b6672}
+.car:after{content:"";position:absolute;left:9%;right:9%;top:48%;height:10%;border:2px solid #a92830;border-left-width:5px;border-right-width:5px;border-radius:4px;box-shadow:0 0 5px #e14b52}
+.car-bottom{position:absolute;left:18%;right:18%;bottom:12%;height:9%;background:#080b0e;border-radius:3px}
+.right{display:grid;grid-template-columns:1fr 18%;align-items:center;padding:0 0 0 10%;position:relative}
+.clockbox{display:flex;align-items:center;justify-content:center;height:55%;border-right:1px solid #c9cdd5}
+.time{font-size:clamp(36px,4vw,78px);font-weight:350;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#050608}
+.gears{height:62%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:0 0 0 12%;font-size:clamp(25px,2.5vw,48px);font-weight:300;color:#9ca3ad}
+.gear{width:100%;text-align:center;line-height:1.25}
+.gear.active{color:#080a0d;background:#d0d4dc;border-radius:18px;padding:2px 0}
+.gps{position:absolute;right:22%;bottom:14%;font-size:clamp(9px,.85vw,14px);color:#777f8b;white-space:nowrap}
+@media (orientation:portrait){
+ .bezel{width:100vw;height:100vh;border-radius:5vw;padding:2vw}
+ .screen{grid-template-columns:38% 38% 24%;border-radius:3.5vw}
+ .left{margin:25% 0}
+ .ready{top:-13%;font-size:13px}
+ .speed{font-size:clamp(68px,17vw,120px)}
+ .unit{font-size:17px;margin-top:10px}
+ .car{width:clamp(43px,11vw,75px);height:clamp(66px,17vw,112px)}
+ .right{grid-template-columns:1fr 22%;padding-left:2%}
+ .time{font-size:clamp(22px,5vw,36px)}
+ .gears{font-size:clamp(17px,4vw,27px);padding-left:4%}
+ .gps{right:20%;bottom:9%;font-size:8px}
+}
+</style>
+</head>
+<body>
+<div class="bezel">
+ <main class="screen">
+  <section class="left">
+   <div class="ready">READY</div>
+   <div class="speedbox"><div class="speed" id="speed">0</div><div class="unit">km/h</div></div>
+  </section>
+  <section class="road-area">
+   <div class="road"><div class="lane"></div><div class="lane2"></div><div class="lane3"></div>
+    <div class="car"><div class="car-bottom"></div></div>
+   </div>
+  </section>
+  <section class="right">
+   <div class="clockbox"><div class="time" id="time">21:45</div></div>
+   <div class="gears"><div class="gear">R</div><div class="gear">N</div><div class="gear active">D</div></div>
+   <div class="gps" id="gps">GPS 연결 대기 중</div>
+  </section>
+ </main>
+</div>
+<script>
+const speedEl=document.getElementById('speed'),gpsEl=document.getElementById('gps');
+function clock(){document.getElementById('time').textContent=new Intl.DateTimeFormat('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
+clock();setInterval(clock,1000);
+if(navigator.geolocation){
+ navigator.geolocation.watchPosition(p=>{
+  const s=p.coords.speed;
+  speedEl.textContent=(s===null||!Number.isFinite(s))?'0':String(Math.round(s*3.6));
+  gpsEl.textContent='GPS ±'+Math.round(p.coords.accuracy)+'m';
+ },()=>{gpsEl.textContent='GPS 권한 확인'}, {enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+}else gpsEl.textContent='GPS 사용 불가';
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+</script>
+</body></html>
