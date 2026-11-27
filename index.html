@@ -37,7 +37,13 @@ body{display:flex;align-items:center;justify-content:center}
 .gear.active{color:#080a0d;background:#d0d4dc;border-radius:18px;padding:2px 0}
 
 .road-area{position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:center;background:#eef0f5}
-.road-scene{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
+.road-scene{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;transform:translateY(0) scale(1);will-change:transform}
+/* GPS 속도가 5km/h를 초과할 때 도로와 차량 장면이 함께 흐르며 주행감을 표현 */
+.road-scene.moving{animation:driveMotion .72s ease-in-out infinite alternate}
+/* 60km/h 이상에서는 도로 흐름을 더 빠르게 */
+.road-scene.fast{animation-duration:.32s}
+@keyframes driveMotion{from{transform:translateY(0) scale(1)}to{transform:translateY(2.2%) scale(1.025)}}
+@media (prefers-reduced-motion:reduce){.road-scene.moving{animation:none;transform:scale(1.015)}}
 .gps{position:absolute;right:22%;bottom:14%;font-size:clamp(9px,.85vw,14px);color:#777f8b;white-space:nowrap}
 @media (orientation:portrait){
  .bezel{width:100vw;height:100vh;border-radius:5vw;padding:2vw}
@@ -72,16 +78,45 @@ body{display:flex;align-items:center;justify-content:center}
  </main>
 </div>
 <script>
-const speedEl=document.getElementById('speed'),gpsEl=document.getElementById('gps');
+const speedEl=document.getElementById('speed'),gpsEl=document.getElementById('gps'),roadScene=document.querySelector('.road-scene');
 function clock(){document.getElementById('time').textContent=new Intl.DateTimeFormat('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
 clock();setInterval(clock,1000);
 if(navigator.geolocation){
  navigator.geolocation.watchPosition(p=>{
   const s=p.coords.speed;
-  speedEl.textContent=(s===null||!Number.isFinite(s))?'0':String(Math.round(s*3.6));
+  const kmh=(s===null||!Number.isFinite(s))?0:Math.round(s*3.6);
+  speedEl.textContent=String(kmh);
+  roadScene.classList.toggle('moving',kmh>5);
+  roadScene.classList.toggle('fast',kmh>=60);
   gpsEl.textContent='GPS ±'+Math.round(p.coords.accuracy)+'m';
  },()=>{gpsEl.textContent='GPS 권한 확인'}, {enableHighAccuracy:true,maximumAge:1000,timeout:10000});
 }else gpsEl.textContent='GPS 사용 불가';
+// Keep the display awake only while this app is visible.
+let wakeLock = null;
+async function keepScreenAwake(){
+  if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+  try {
+    if (wakeLock) return;
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch (err) {
+    wakeLock = null;
+    console.log('Screen Wake Lock unavailable:', err);
+  }
+}
+function releaseScreenAwake(){
+  if (wakeLock) {
+    const lock = wakeLock;
+    wakeLock = null;
+    lock.release().catch(()=>{});
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') keepScreenAwake();
+  else releaseScreenAwake();
+});
+window.addEventListener('pagehide', releaseScreenAwake);
+keepScreenAwake();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 </script>
 </body></html>
